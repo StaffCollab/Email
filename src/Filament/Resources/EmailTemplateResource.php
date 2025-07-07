@@ -55,14 +55,14 @@ class EmailTemplateResource extends Resource
                         // Recipients and Attachments will be loaded dynamically
                         CheckboxList::make('recipient_keys')
                             ->label('Recipients')
-                            ->options(fn(Get $get) => self::getRecipientOptions($get('event_class')))
+                            ->options(fn (Get $get) => self::getRecipientOptions($get('event_class')))
                             ->columns(1)
-                            ->visible(fn(Get $get) => ! empty($get('event_class'))),
+                            ->visible(fn (Get $get) => ! empty($get('event_class'))),
                         CheckboxList::make('attachment_keys')
                             ->label('Attachments')
-                            ->options(fn($get) => self::getAttachmentOptions($get('event_class')))
+                            ->options(fn ($get) => self::getAttachmentOptions($get('event_class')))
                             ->columns(1)
-                            ->visible(fn(Get $get) => ! empty($get('event_class'))),
+                            ->visible(fn (Get $get) => ! empty($get('event_class'))),
                     ]),
 
                 View::make('email::section-border')
@@ -75,40 +75,40 @@ class EmailTemplateResource extends Resource
                     ->schema([
                         TiptapEditor::make('from_name')
                             ->label('From Name')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none'),
                         TiptapEditor::make('reply_to')
                             ->label('Reply To')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none'),
                         TiptapEditor::make('subject')
                             ->label('Subject')
                             ->required()
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none'),
                         TiptapEditor::make('greeting')
                             ->label('Greeting')
                             ->maxLength(255)
                             ->placeholder('e.g., Hello {{ $user->name }},')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none'),
                         TiptapEditor::make('body')
                             ->label('Email Body')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('minimal'),
                         TiptapEditor::make('call_to_action')
                             ->label('Call to Action Text')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none'),
                         TiptapEditor::make('call_to_action_url')
                             ->label('Call to Action URL')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none'),
                         TiptapEditor::make('signature')
                             ->label('Email Signature')
                             ->columnSpanFull()
                             ->profile('none')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class'))),
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class'))),
                     ]),
             ]);
     }
