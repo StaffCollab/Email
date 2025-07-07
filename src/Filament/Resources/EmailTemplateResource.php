@@ -296,7 +296,6 @@ class EmailTemplateResource extends Resource
         }
 
         try {
-            dump(array_keys($class::getTemplateData()));
             return array_keys($class::getTemplateData());
         } catch (\Exception $e) {
             return [];
