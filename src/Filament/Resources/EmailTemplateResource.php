@@ -2,24 +2,26 @@
 
 namespace StaffCollab\Email\Filament\Resources;
 
-use App\Filament\Clusters\Settings;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\View;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use FilamentTiptapEditor\TiptapEditor;
+use Filament\Resources\Resource;
 use StaffCollab\Email\Emailable;
+use App\Filament\Clusters\Settings;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\View;
+use Livewire\Component as Livewire;
 use StaffCollab\Email\EmailTemplate;
-use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use FilamentTiptapEditor\TiptapEditor;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\CheckboxList;
 use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
 use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
+use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
 
 class EmailTemplateResource extends Resource
 {
@@ -48,7 +50,14 @@ class EmailTemplateResource extends Resource
                                 Select::make('event_class')
                                     ->label('Event')
                                     ->options(self::getEventOptions())
+                                    ->disabled(fn($state) => $state)
+                                    ->hintAction(
+                                        \Filament\Forms\Components\Actions\Action::make('change_event')
+                                            ->visible(fn(Get $get) => $get('event_class'))
+                                            ->action(fn(Set $set) => $set('event_class', null))
+                                    )
                                     ->live()
+                                    ->afterStateUpdated(function (Get $get, Set $set) {})
                                     ->required()
                                     ->searchable(),
                             ]),
@@ -72,43 +81,61 @@ class EmailTemplateResource extends Resource
                     ->description('Configure the email template details, including subject, body, and call to action.')
                     ->aside()
                     ->columns(2)
+                    ->visible(fn(Get $get) => ! empty($get('event_class')))
                     ->schema([
                         TiptapEditor::make('from_name')
                             ->label('From Name')
                             ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
-                            ->profile('none'),
+                            ->profile('none')
+                            ->placeholder('e.g., {{ user_name }},')
+                            ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('reply_to')
                             ->label('Reply To')
                             ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
-                            ->profile('none'),
+                            ->profile('none')
+                            ->placeholder('e.g., {{ company_email }},')
+                            ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('subject')
                             ->label('Subject')
                             ->required()
                             ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
-                            ->profile('none'),
+                            ->profile('none')
+                            ->placeholder('e.g., Here is your invoice #{{ invoice_number }},')
+                            ->columnSpanFull()
+                            ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('greeting')
                             ->label('Greeting')
-                            ->maxLength(255)
-                            ->placeholder('e.g., Hello {{ $user->name }},')
+                            ->placeholder('e.g., Hello {{ user_name }},')
                             ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
-                            ->profile('none'),
+                            ->profile('none')
+                            ->columnSpanFull()
+                            ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('body')
                             ->label('Email Body')
                             ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
-                            ->profile('minimal'),
+                            ->profile('minimal')
+                            ->placeholder('e.g., Your invoice for booking {{ booking_description }} is ready to download,')
+                            ->columnSpanFull()
+                            ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('call_to_action')
                             ->label('Call to Action Text')
                             ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
-                            ->profile('none'),
+                            ->placeholder('e.g., Download invoice')
+                            ->profile('none')
+                            ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('call_to_action_url')
                             ->label('Call to Action URL')
                             ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
-                            ->profile('none'),
+                            ->profile('none')
+                            ->placeholder('e.g., {{ download_url }},')
+                            ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('signature')
                             ->label('Email Signature')
                             ->columnSpanFull()
                             ->profile('none')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class'))),
+                            ->placeholder('e.g., Thanks for choosing {{ bookable_name }},')
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->showMergeTagsInBlocksPanel(false),
                     ]),
             ]);
     }
@@ -254,7 +281,12 @@ class EmailTemplateResource extends Resource
     public static function getMergeTags($eventClass): array
     {
         if (! $eventClass) {
-            return [];
+            return [
+                'user',
+                'organization',
+                'email_template',
+                'email_template.name',
+            ];
         }
 
         $class = 'App\\Events\\' . $eventClass;
@@ -264,7 +296,8 @@ class EmailTemplateResource extends Resource
         }
 
         try {
-            return $class::getMergeTags();
+            dump(array_keys($class::getTemplateData()));
+            return array_keys($class::getTemplateData());
         } catch (\Exception $e) {
             return [];
         }
