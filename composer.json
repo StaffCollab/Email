@@ -1,0 +1,74 @@
+{
+    "name": "staffcollab/email",
+    "description": "Email By Events For Filament",
+    "keywords": [
+        "StaffCollab",
+        "laravel",
+        "email"
+    ],
+    "homepage": "https://github.com/staffcollab/email",
+    "support": {
+        "issues": "https://github.com/staffcollab/email/issues",
+        "source": "https://github.com/staffcollab/email"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yakov Wiznitzer",
+            "email": "ydwiznitzer@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "asmit/filament-mention": "^1.1",
+        "awcodes/filament-tiptap-editor": "^3.5",
+        "filament/filament": "^3.0",
+        "spatie/laravel-package-tools": "^1.15.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^7.9",
+        "orchestra/testbench": "^8.0",
+        "pestphp/pest": "^2.1",
+        "pestphp/pest-plugin-arch": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "spatie/laravel-ray": "^1.26"
+    },
+    "autoload": {
+        "psr-4": {
+            "StaffCollab\\Email\\": "src/",
+            "StaffCollab\\Email\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "StaffCollab\\Email\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "StaffCollab\\Email\\EmailServiceProvider"
+            ],
+            "aliases": {
+                "Email": "StaffCollab\\Email\\Facades\\Email"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

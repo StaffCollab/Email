@@ -1,0 +1,41 @@
+@import '../../vendor/filament/filament/resources/css/theme.css';
+@import '../../vendor/awcodes/filament-tiptap-editor/resources/css/plugin.css';
+
+/* Additional styles for email templates */
+.tiptap-editor {
+    min-height: 200px;
+}
+
+.tiptap-editor .ProseMirror {
+    min-height: 150px;
+    padding: 1rem;
+}
+
+/* Ensure proper styling for the email template forms */
+.fi-section-content-ctn {
+    overflow: visible;
+}
+
+/* Fix for TiptapEditor in modal/form contexts */
+.tiptap-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.tiptap-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
+    border-bottom: 1px solid rgba(var(--gray-200), 1);
+}
+
+.dark .tiptap-toolbar {
+    background: rgba(var(--gray-900), 1);
+    border-bottom-color: rgba(var(--gray-700), 1);
+}
+
+/* Ensure proper spacing in forms */
+.fi-fo-field-wrp .tiptap-wrapper {
+    margin-top: 0.5rem;
+}
