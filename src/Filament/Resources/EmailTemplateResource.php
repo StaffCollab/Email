@@ -2,24 +2,24 @@
 
 namespace StaffCollab\Email\Filament\Resources;
 
-use Filament\Tables;
-use Filament\Forms\Get;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use StaffCollab\Email\Emailable;
 use App\Filament\Clusters\Settings;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\View;
-use StaffCollab\Email\EmailTemplate;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
-use FilamentTiptapEditor\TiptapEditor;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\View;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use FilamentTiptapEditor\TiptapEditor;
+use StaffCollab\Email\Emailable;
+use StaffCollab\Email\EmailTemplate;
+use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
 use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
 use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
-use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
 
 class EmailTemplateResource extends Resource
 {
@@ -55,14 +55,14 @@ class EmailTemplateResource extends Resource
                         // Recipients and Attachments will be loaded dynamically
                         CheckboxList::make('recipient_keys')
                             ->label('Recipients')
-                            ->options(fn(Get $get) => self::getRecipientOptions($get('event_class')))
+                            ->options(fn (Get $get) => self::getRecipientOptions($get('event_class')))
                             ->columns(1)
-                            ->visible(fn(Get $get) => !empty($get('event_class'))),
+                            ->visible(fn (Get $get) => ! empty($get('event_class'))),
                         CheckboxList::make('attachment_keys')
                             ->label('Attachments')
-                            ->options(fn($get) => self::getAttachmentOptions($get('event_class')))
+                            ->options(fn ($get) => self::getAttachmentOptions($get('event_class')))
                             ->columns(1)
-                            ->visible(fn(Get $get) => !empty($get('event_class'))),
+                            ->visible(fn (Get $get) => ! empty($get('event_class'))),
                     ]),
 
                 View::make('email::section-border')
@@ -244,7 +244,7 @@ class EmailTemplateResource extends Resource
 
         $class = 'App\\Events\\' . $eventClass;
 
-        if (!class_exists($class) || !is_subclass_of($class, Emailable::class)) {
+        if (! class_exists($class) || ! is_subclass_of($class, Emailable::class)) {
             return [];
         }
 
@@ -254,6 +254,7 @@ class EmailTemplateResource extends Resource
             foreach ($recipients as $key => $recipient) {
                 $options[$key] = $key;
             }
+
             return $options;
         } catch (\Exception $e) {
             return [];
@@ -268,8 +269,8 @@ class EmailTemplateResource extends Resource
         }
 
         $class = 'App\\Events\\' . $eventClass;
-        
-        if (!class_exists($class) || !is_subclass_of($class, Emailable::class)) {
+
+        if (! class_exists($class) || ! is_subclass_of($class, Emailable::class)) {
             return [];
         }
 
@@ -279,6 +280,7 @@ class EmailTemplateResource extends Resource
             foreach ($attachments as $key => $attachment) {
                 $options[$key] = $key;
             }
+
             return $options;
         } catch (\Exception $e) {
             return [];

@@ -10,7 +10,6 @@ class ListEmailTemplates extends ListRecords
 {
     protected static string $resource = EmailTemplateResource::class;
 
-
     protected function getHeaderActions(): array
     {
         return [
