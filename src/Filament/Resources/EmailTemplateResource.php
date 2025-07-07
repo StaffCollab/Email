@@ -2,26 +2,25 @@
 
 namespace StaffCollab\Email\Filament\Resources;
 
-use Filament\Tables;
+use App\Filament\Clusters\Settings;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\View;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use StaffCollab\Email\Emailable;
-use App\Filament\Clusters\Settings;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\View;
-use Livewire\Component as Livewire;
-use StaffCollab\Email\EmailTemplate;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
+use Filament\Tables;
+use Filament\Tables\Table;
 use FilamentTiptapEditor\TiptapEditor;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\CheckboxList;
+use StaffCollab\Email\Emailable;
+use StaffCollab\Email\EmailTemplate;
+use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
 use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\EditEmailTemplate;
 use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\ListEmailTemplates;
-use StaffCollab\Email\Filament\Resources\EmailTemplateResource\Pages\CreateEmailTemplate;
 
 class EmailTemplateResource extends Resource
 {
