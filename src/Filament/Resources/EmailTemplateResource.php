@@ -55,14 +55,14 @@ class EmailTemplateResource extends Resource
                         // Recipients and Attachments will be loaded dynamically
                         CheckboxList::make('recipient_keys')
                             ->label('Recipients')
-                            ->options(fn (Get $get) => self::getRecipientOptions($get('event_class')))
+                            ->options(fn(Get $get) => self::getRecipientOptions($get('event_class')))
                             ->columns(1)
-                            ->visible(fn (Get $get) => ! empty($get('event_class'))),
+                            ->visible(fn(Get $get) => ! empty($get('event_class'))),
                         CheckboxList::make('attachment_keys')
                             ->label('Attachments')
-                            ->options(fn ($get) => self::getAttachmentOptions($get('event_class')))
+                            ->options(fn($get) => self::getAttachmentOptions($get('event_class')))
                             ->columns(1)
-                            ->visible(fn (Get $get) => ! empty($get('event_class'))),
+                            ->visible(fn(Get $get) => ! empty($get('event_class'))),
                     ]),
 
                 View::make('email::section-border')
@@ -73,78 +73,42 @@ class EmailTemplateResource extends Resource
                     ->aside()
                     ->columns(2)
                     ->schema([
-                        TextInput::make('from_name')
+                        TiptapEditor::make('from_name')
                             ->label('From Name')
-                            ->maxLength(255)
-                            ->placeholder('e.g., {{ $user->name }}'),
-                        TextInput::make('reply_to')
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->profile('none'),
+                        TiptapEditor::make('reply_to')
                             ->label('Reply To')
-                            ->email()
-                            ->maxLength(255)
-                            ->placeholder('e.g., {{ $user->email }}'),
-                        TextInput::make('subject')
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->profile('none'),
+                        TiptapEditor::make('subject')
                             ->label('Subject')
                             ->required()
-                            ->maxLength(255)
-                            ->placeholder('e.g., Welcome {{ $user->name }}!'),
-                        TextInput::make('greeting')
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->profile('none'),
+                        TiptapEditor::make('greeting')
                             ->label('Greeting')
                             ->maxLength(255)
-                            ->placeholder('e.g., Hello {{ $user->name }},'),
+                            ->placeholder('e.g., Hello {{ $user->name }},')
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->profile('none'),
                         TiptapEditor::make('body')
                             ->label('Email Body')
-                            ->columnSpanFull()
-                            ->profile('email')
-                            ->tools([
-                                'heading',
-                                'bullet-list',
-                                'ordered-list',
-                                'checked-list',
-                                'blockquote',
-                                'hr',
-                                '|',
-                                'bold',
-                                'italic',
-                                'strike',
-                                'underline',
-                                'superscript',
-                                'subscript',
-                                'align-left',
-                                'align-center',
-                                'align-right',
-                                '|',
-                                'link',
-                                'media',
-                                '|',
-                                'undo',
-                                'redo',
-                            ])
-                            ->placeholder('Write your email content here. You can use variables like {{ $user->name }} for dynamic content.')
-                            ->maxContentWidth('full')
-                            ->required(),
-                        TextInput::make('call_to_action')
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->profile('minimal'),
+                        TiptapEditor::make('call_to_action')
                             ->label('Call to Action Text')
-                            ->maxLength(255)
-                            ->placeholder('e.g., Get Started'),
-                        TextInput::make('call_to_action_url')
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->profile('none'),
+                        TiptapEditor::make('call_to_action_url')
                             ->label('Call to Action URL')
-                            ->url()
-                            ->maxLength(255)
-                            ->placeholder('e.g., {{ config("app.url") }}/dashboard'),
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->profile('none'),
                         TiptapEditor::make('signature')
                             ->label('Email Signature')
                             ->columnSpanFull()
-                            ->profile('minimal')
-                            ->tools([
-                                'bold',
-                                'italic',
-                                'link',
-                                '|',
-                                'undo',
-                                'redo',
-                            ])
-                            ->placeholder('Best regards,<br>Your Team')
-                            ->maxContentWidth('full'),
+                            ->profile('none')
+                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class'))),
                     ]),
             ]);
     }
@@ -282,6 +246,25 @@ class EmailTemplateResource extends Resource
             }
 
             return $options;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public static function getMergeTags($eventClass): array
+    {
+        if (! $eventClass) {
+            return [];
+        }
+
+        $class = 'App\\Events\\' . $eventClass;
+
+        if (! class_exists($class) || ! is_subclass_of($class, Emailable::class)) {
+            return [];
+        }
+
+        try {
+            return $class::getMergeTags();
         } catch (\Exception $e) {
             return [];
         }
