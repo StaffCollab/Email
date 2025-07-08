@@ -239,13 +239,7 @@ class EmailTemplateResource extends Resource
         }
 
         try {
-            $recipients = $class::getRecipients();
-            $options = [];
-            foreach ($recipients as $key => $recipient) {
-                $options[$key] = $key;
-            }
-
-            return $options;
+            return $class::getRecipientOptions();
         } catch (\Exception $e) {
             return [];
         }
@@ -265,13 +259,7 @@ class EmailTemplateResource extends Resource
         }
 
         try {
-            $attachments = $class::getAttachments();
-            $options = [];
-            foreach ($attachments as $key => $attachment) {
-                $options[$key] = $key;
-            }
-
-            return $options;
+            return $class::getAttachmentOptions();
         } catch (\Exception $e) {
             return [];
         }
@@ -295,7 +283,7 @@ class EmailTemplateResource extends Resource
         }
 
         try {
-            return array_keys($class::getTemplateData());
+            return array_keys($class::getMergeTags());
         } catch (\Exception $e) {
             return [];
         }
