@@ -26,7 +26,7 @@ class SendEventEmailListener
         foreach ($templates as $template) {
             $recipientKeys = $template->recipient_keys ?? [];
             $attachmentKeys = $template->attachment_keys ?? [];
-            $recipients = collect($event::getRecipients())
+            $recipients = collect($event->getRecipients())
                 ->filter(function ($recipient, $key) use ($recipientKeys) {
                     return in_array($key, $recipientKeys);
                 });

@@ -2,20 +2,36 @@
 
 namespace StaffCollab\Email;
 
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+use StaffCollab\Email\Emailable;
+use StaffCollab\Email\EmailTemplate;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class EventEmailNotification extends Notification
 {
-    protected \StaffCollab\Email\Emailable $event;
+    protected Emailable $event;
 
-    protected \StaffCollab\Email\EmailTemplate $template;
+    protected string $fromName;
+    protected string $replyTo;
+    protected string $subject;
+    protected string $greeting;
+    protected string $body;
+    protected string $callToActionUrl;
+    protected string $callToActionText;
+    protected string $signature;
 
-    public function __construct(\StaffCollab\Email\Emailable $event, \StaffCollab\Email\EmailTemplate $template)
+    public function __construct(Emailable $event, EmailTemplate $template)
     {
         $this->event = $event;
-        $this->template = $template;
+        $this->fromName = tiptap_converter()->mergeTagsMap($event->getTemplateData())->asHTML($template->from_name);
+        $this->replyTo = tiptap_converter()->mergeTagsMap($event->getTemplateData())->asHTML($template->reply_to);
+        $this->subject = tiptap_converter()->mergeTagsMap($event->getTemplateData())->asHTML($template->subject);
+        $this->greeting = tiptap_converter()->mergeTagsMap($event->getTemplateData())->asHTML($template->greeting);
+        $this->body = tiptap_converter()->mergeTagsMap($event->getTemplateData())->asHTML($template->body);
+        $this->callToActionText = tiptap_converter()->mergeTagsMap($event->getTemplateData())->asHTML($template->call_to_action);
+        $this->callToActionUrl = tiptap_converter()->mergeTagsMap($event->getTemplateData())->asHTML($template->call_to_action_url);
+        $this->signature = tiptap_converter()->mergeTagsMap($event->getTemplateData())->asHTML($template->signature);
     }
 
     public function via($notifiable)
@@ -26,21 +42,18 @@ class EventEmailNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->when($this->template['from_name'], function ($mail) {
-                return $mail->from(null, $this->template['from_name']);
+            ->when($this->fromName, function ($mail) {
+                return $mail->from(null, $this->fromName);
             })
-            ->when($this->template['reply_to'], function ($mail) {
-                return $mail->replyTo($this->template['reply_to']);
+            ->when($this->replyTo, function ($mail) {
+                return $mail->replyTo($this->replyTo);
             })
-            ->subject(Blade::render($this->template->subject ?? $this->event->getName(), $this->event->getTemplateData()))
-            ->greeting(Blade::render($this->template['greeting'], $this->event->getTemplateData()))
-            ->lineIf($this->template['body'], Blade::render($this->template['body'], $this->event->getTemplateData()))
-            ->when($this->template['call_to_action'] && $this->template['call_to_action_url'], function ($mail) {
-                return $mail->action(
-                    Blade::render($this->template['call_to_action'], $this->event->getTemplateData()),
-                    Blade::render($this->template['call_to_action_url'], $this->event->getTemplateData())
-                );
+            ->subject($this->subject)
+            ->greeting($this->greeting)
+            ->lineIf($this->body, $this->body)
+            ->when($this->callToActionText && $this->callToActionUrl, function ($mail) {
+                return $mail->action($this->callToActionText, $this->callToActionUrl);
             })
-            ->salutation($this->template['signature'], Blade::render($this->template['signature'], $this->event->getTemplateData()));
+            ->salutation($this->signature, $this->signature);
     }
 }
