@@ -2,23 +2,27 @@
 
 namespace StaffCollab\Email;
 
-use StaffCollab\Email\Emailable;
-use StaffCollab\Email\EmailTemplate;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class EventEmailNotification extends Notification
 {
     protected Emailable $event;
 
     protected string $fromName;
+
     protected string $replyTo;
+
     protected string $subject;
+
     protected string $greeting;
+
     protected string $body;
+
     protected string $callToActionUrl;
+
     protected string $callToActionText;
+
     protected string $signature;
 
     public function __construct(Emailable $event, EmailTemplate $template)
