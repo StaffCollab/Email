@@ -30,7 +30,7 @@ class SendEventEmailListener
         }
 
         foreach ($templates as $template) {
-            Log::info("execute template " . $template->id);
+            Log::info('execute template ' . $template->id);
             $recipientKeys = $template->recipient_keys ?? [];
             $attachmentKeys = $template->attachment_keys ?? [];
             Log::alert("message to be sent to recipients: " . implode(', ', $recipientKeys));
@@ -41,6 +41,7 @@ class SendEventEmailListener
                 });
             if ($recipients->isEmpty()) {
                 Log::info('No recipients found for template: ' . $template->id);
+
                 continue;
             }
             foreach ($recipients as $recipient) {
