@@ -31,14 +31,19 @@ class SendEventEmailListener
         }
 
         foreach ($templates as $template) {
+            Log::info("execute template " . $template->id);
             $recipientKeys = $template->recipient_keys ?? [];
             $attachmentKeys = $template->attachment_keys ?? [];
             $recipients = collect($event->getRecipients())
                 ->filter(function ($recipient, $key) use ($recipientKeys) {
                     return in_array($key, $recipientKeys);
                 });
+            if ($recipients->isEmpty()) {
+                Log::info('No recipients found for template: ' . $template->id);
+                continue;
+            }
             foreach ($recipients as $recipient) {
-                Log::debug('Sending email to: ' . $recipient->email);
+                Log::critical('Sending email to: ' . $recipient->email);
                 $recipient->notify(new EventEmailNotification($event, $template));
             }
         }
