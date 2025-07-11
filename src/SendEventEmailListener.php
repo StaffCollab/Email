@@ -30,7 +30,7 @@ class SendEventEmailListener
         }
 
         foreach ($templates as $template) {
-            Log::info('execute template ' . $template->id);
+            Log::info('execute template ' . $template->id, ['template' => $template]);
             $recipientKeys = $template->recipient_keys ?? [];
             $attachmentKeys = $template->attachment_keys ?? [];
             Log::alert("message to be sent to recipients: " . implode(', ', $recipientKeys));
