@@ -31,8 +31,8 @@ class SendEventEmailListener
 
         foreach ($templates as $template) {
             Log::info('execute template ' . $template->id, ['template' => $template]);
-            $recipientKeys = $template->recipient_keys ?? [];
-            $attachmentKeys = $template->attachment_keys ?? [];
+            $recipientKeys = array_keys($template->recipient_keys ?? []);
+            $attachmentKeys = array_keys($template->attachment_keys ?? []);
             Log::alert('message to be sent to recipients: ' . implode(', ', $recipientKeys));
             $recipients = collect($event->getRecipients())
                 ->filter(function ($recipient, $key) use ($recipientKeys) {
