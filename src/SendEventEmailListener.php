@@ -20,12 +20,13 @@ class SendEventEmailListener
             return; // Ensure the event implements the Emailable interface
         }
 
-        Log::debug("Event: " . get_class($event));
+        Log::debug('Event: ' . get_class($event));
 
         $templates = EmailTemplate::where('event_class', class_basename($eventName))->get();
 
         if ($templates->isEmpty()) {
-            Log::debug("No email templates found for event: " . get_class($event));
+            Log::debug('No email templates found for event: ' . get_class($event));
+
             return;
         }
 
@@ -37,7 +38,7 @@ class SendEventEmailListener
                     return in_array($key, $recipientKeys);
                 });
             foreach ($recipients as $recipient) {
-                Log::debug("Sending email to: " . $recipient->email);
+                Log::debug('Sending email to: ' . $recipient->email);
                 $recipient->notify(new EventEmailNotification($event, $template));
             }
         }
