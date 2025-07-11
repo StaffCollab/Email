@@ -3,7 +3,7 @@
 namespace StaffCollab\Email;
 
 use Illuminate\Support\Facades\Log;
-use StaffCollab\Email\Models\EmailTemplate;
+use StaffCollab\Email\EmailTemplate;
 
 class SendEventEmailListener
 {
