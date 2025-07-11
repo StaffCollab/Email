@@ -33,8 +33,10 @@ class SendEventEmailListener
             Log::info("execute template " . $template->id);
             $recipientKeys = $template->recipient_keys ?? [];
             $attachmentKeys = $template->attachment_keys ?? [];
+            Log::alert("message to be sent to recipients: " . implode(', ', $recipientKeys));
             $recipients = collect($event->getRecipients())
                 ->filter(function ($recipient, $key) use ($recipientKeys) {
+                    Log::alert("recipient key: " . $key);
                     return in_array($key, $recipientKeys);
                 });
             if ($recipients->isEmpty()) {
