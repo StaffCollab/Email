@@ -49,12 +49,12 @@ class EmailTemplateResource extends Resource
                                 Select::make('event_class')
                                     ->label('Event')
                                     ->options(self::getEventOptions())
-                                    ->disabled(fn($state) => $state)
+                                    ->disabled(fn ($state) => $state)
                                     ->dehydrated(true)
                                     ->hintAction(
                                         \Filament\Forms\Components\Actions\Action::make('change_event')
-                                            ->visible(fn(Get $get) => $get('event_class'))
-                                            ->action(fn(Set $set) => $set('event_class', null))
+                                            ->visible(fn (Get $get) => $get('event_class'))
+                                            ->action(fn (Set $set) => $set('event_class', null))
                                     )
                                     ->live()
                                     ->afterStateUpdated(function (Get $get, Set $set) {})
@@ -64,14 +64,14 @@ class EmailTemplateResource extends Resource
                         // Recipients and Attachments will be loaded dynamically
                         CheckboxList::make('recipient_keys')
                             ->label('Recipients')
-                            ->options(fn(Get $get) => self::getRecipientOptions($get('event_class')))
+                            ->options(fn (Get $get) => self::getRecipientOptions($get('event_class')))
                             ->columns(1)
-                            ->visible(fn(Get $get) => ! empty($get('event_class'))),
+                            ->visible(fn (Get $get) => ! empty($get('event_class'))),
                         CheckboxList::make('attachment_keys')
                             ->label('Attachments')
-                            ->options(fn($get) => self::getAttachmentOptions($get('event_class')))
+                            ->options(fn ($get) => self::getAttachmentOptions($get('event_class')))
                             ->columns(1)
-                            ->visible(fn(Get $get) => ! empty($get('event_class'))),
+                            ->visible(fn (Get $get) => ! empty($get('event_class'))),
                     ]),
 
                 View::make('email::section-border')
@@ -81,24 +81,24 @@ class EmailTemplateResource extends Resource
                     ->description('Configure the email template details, including subject, body, and call to action.')
                     ->aside()
                     ->columns(2)
-                    ->visible(fn(Get $get) => ! empty($get('event_class')))
+                    ->visible(fn (Get $get) => ! empty($get('event_class')))
                     ->schema([
                         TiptapEditor::make('from_name')
                             ->label('From Name')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none')
                             ->placeholder('e.g., {{ user_name }},')
                             ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('reply_to')
                             ->label('Reply To')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none')
                             ->placeholder('e.g., {{ company_email }},')
                             ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('subject')
                             ->label('Subject')
                             ->required()
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none')
                             ->placeholder('e.g., Here is your invoice #{{ invoice_number }},')
                             ->columnSpanFull()
@@ -106,26 +106,26 @@ class EmailTemplateResource extends Resource
                         TiptapEditor::make('greeting')
                             ->label('Greeting')
                             ->placeholder('e.g., Hello {{ user_name }},')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none')
                             ->columnSpanFull()
                             ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('body')
                             ->label('Email Body')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('minimal')
                             ->placeholder('e.g., Your invoice for booking {{ booking_description }} is ready to download,')
                             ->columnSpanFull()
                             ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('call_to_action')
                             ->label('Call to Action Text')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->placeholder('e.g., Download invoice')
                             ->profile('none')
                             ->showMergeTagsInBlocksPanel(false),
                         TiptapEditor::make('call_to_action_url')
                             ->label('Call to Action URL')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->profile('none')
                             ->placeholder('e.g., {{ download_url }},')
                             ->showMergeTagsInBlocksPanel(false),
@@ -134,7 +134,7 @@ class EmailTemplateResource extends Resource
                             ->columnSpanFull()
                             ->profile('none')
                             ->placeholder('e.g., Thanks for choosing {{ bookable_name }},')
-                            ->mergeTags(fn(Get $get) => self::getMergeTags($get('event_class')))
+                            ->mergeTags(fn (Get $get) => self::getMergeTags($get('event_class')))
                             ->showMergeTagsInBlocksPanel(false),
                     ]),
             ]);
@@ -245,6 +245,7 @@ class EmailTemplateResource extends Resource
             if (is_array($options)) {
                 return array_combine($options, $options);
             }
+
             return [];
         } catch (\Exception $e) {
             return [];
